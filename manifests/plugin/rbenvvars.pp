@@ -1,14 +1,14 @@
-define rbenv::plugin::rbenvvars(
+define plenv::plugin::plenvvars(
   $user   = $title,
-  $source = 'https://github.com/sstephenson/rbenv-vars.git',
+  $source = 'https://github.com/sstephenson/plenv-vars.git',
   $group  = $user,
   $home   = '',
   $root   = ''
 ) {
-  rbenv::plugin { "rbenv::plugin::rbenvvars::${user}":
+  plenv::plugin { "plenv::plugin::plenvvars::${user}":
     user        => $user,
     source      => $source,
-    plugin_name => 'rbenv-vars',
+    plugin_name => 'plenv-vars',
     group       => $group,
     home        => $home,
     root        => $root

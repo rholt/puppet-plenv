@@ -1,4 +1,4 @@
-define rbenv::install(
+define plenv::install(
   $user  = $title,
   $group = $user,
   $home  = '',
@@ -6,19 +6,18 @@ define rbenv::install(
   $rc    = '.profile'
 ) {
 
-  # Workaround http://projects.puppetlabs.com/issues/9848
   $home_path = $home ? { '' => "/home/${user}", default => $home }
-  $root_path = $root ? { '' => "${home_path}/.rbenv", default => $root }
+  $root_path = $root ? { '' => "${home_path}/.plenv", default => $root }
 
-  $rbenvrc = "${home_path}/.rbenvrc"
+  $plenvrc = "${home_path}/.plenvrc"
   $shrc  = "${home_path}/${rc}"
 
-  if ! defined( Class['rbenv::dependencies'] ) {
-    require rbenv::dependencies
+  if ! defined( Class['plenv::dependencies'] ) {
+    require plenv::dependencies
   }
 
-  exec { "rbenv::checkout ${user}":
-    command => "git clone https://github.com/sstephenson/rbenv.git ${root_path}",
+  exec { "plenv::checkout ${user}":
+    command => "git clone https://github.com/tokuhirom/plenv.git ${root_path}",
     user    => $user,
     group   => $group,
     creates => $root_path,
@@ -28,28 +27,28 @@ define rbenv::install(
     require => Package['git'],
   }
 
-  file { "rbenv::rbenvrc ${user}":
-    path    => $rbenvrc,
+  file { "plenv::plenvrc ${user}":
+    path    => $plenvrc,
     owner   => $user,
     group   => $group,
-    content => template('rbenv/dot.rbenvrc.erb'),
-    require => Exec["rbenv::checkout ${user}"],
+    content => template('plenv/dot.plenvrc.erb'),
+    require => Exec["plenv::checkout ${user}"],
   }
 
-  exec { "rbenv::shrc ${user}":
-    command => "echo 'source ${rbenvrc}' >> ${shrc}",
+  exec { "plenv::shrc ${user}":
+    command => "echo 'source ${plenvrc}' >> ${shrc}",
     user    => $user,
     group   => $group,
-    unless  => "grep -q rbenvrc ${shrc}",
+    unless  => "grep -q plenvrc ${shrc}",
     path    => ['/bin', '/usr/bin', '/usr/sbin'],
-    require => File["rbenv::rbenvrc ${user}"],
+    require => File["plenv::plenvrc ${user}"],
   }
 
-  file { "rbenv::cache-dir ${user}":
+  file { "plenv::cache-dir ${user}":
     ensure  => directory,
     owner   => $user,
     group   => $group,
     path    => "${root_path}/cache",
-    require => Exec["rbenv::checkout ${user}"]
+    require => Exec["plenv::checkout ${user}"]
   }
 }

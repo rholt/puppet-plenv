@@ -1,4 +1,4 @@
-class rbenv::dependencies::centos {
+class plenv::dependencies::centos {
 
   # These are the "build essentials" for RHEL / CentOS
   if ! defined(Package['autoconf'])  { package { 'autoconf':  ensure => installed } }
@@ -14,12 +14,12 @@ class rbenv::dependencies::centos {
   if ! defined(Package['patch'])     { package { 'patch':     ensure => installed } }
   if ! defined(Package['pkgconfig']) { package { 'pkgconfig': ensure => installed } }
 
-  # Other packages required to build a proper Ruby
+  # Other packages required to build a proper Perl
   if ! defined(Package['readline-devel']) { package { 'readline-devel': ensure => installed } }
   if ! defined(Package['openssl-devel'])  { package { 'openssl-devel':  ensure => installed } }
   if ! defined(Package['zlib-devel'])     { package { 'zlib-devel':     ensure => installed } }
 
-  # Git and curl are needed for rbenv and ruby-build
+  # Git and curl are needed for plenv and perl-build
   if ! defined(Package['git'])  { package { 'git':  ensure => installed } }
   if ! defined(Package['curl']) { package { 'curl': ensure => installed } }
 }

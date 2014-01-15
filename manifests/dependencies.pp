@@ -1,9 +1,9 @@
-class rbenv::dependencies {
+class plenv::dependencies {
   case $::osfamily {
-    archlinux      : { require rbenv::dependencies::archlinux }
-    debian         : { require rbenv::dependencies::ubuntu    }
-    redhat, Linux  : { require rbenv::dependencies::centos    }
-    suse           : { require rbenv::dependencies::suse      }
+    archlinux      : { require plenv::dependencies::archlinux }
+    debian         : { require plenv::dependencies::ubuntu    }
+    redhat, Linux  : { require plenv::dependencies::centos    }
+    suse           : { require plenv::dependencies::suse      }
     default        : { notice("Could not load dependencies for ${::osfamily}") }
   }
 }

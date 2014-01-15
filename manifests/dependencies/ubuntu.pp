@@ -1,4 +1,4 @@
-class rbenv::dependencies::ubuntu {
+class plenv::dependencies::ubuntu {
   if ! defined(Package['build-essential'])  { package { 'build-essential':  ensure => installed } }
   if ! defined(Package['libc6-dev'])        { package { 'libc6-dev':        ensure => installed } }
   if ! defined(Package['bison'])            { package { 'bison':            ensure => installed } }

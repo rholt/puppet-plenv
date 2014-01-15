@@ -1,4 +1,4 @@
-define rbenv::plugin(
+define plenv::plugin(
   $user,
   $source,
   $plugin_name = $title,
@@ -9,7 +9,7 @@ define rbenv::plugin(
 ) {
 
   $home_path   = $home ? { '' => "/home/${user}",       default => $home }
-  $root_path   = $root ? { '' => "${home_path}/.rbenv", default => $root }
+  $root_path   = $root ? { '' => "${home_path}/.plenv", default => $root }
   $plugins     = "${root_path}/plugins"
   $destination = "${plugins}/${plugin_name}"
 
@@ -17,17 +17,17 @@ define rbenv::plugin(
     fail('Only git plugins are supported')
   }
 
-  if ! defined(File["rbenv::plugins ${user}"]) {
-    file { "rbenv::plugins ${user}":
+  if ! defined(File["plenv::plugins ${user}"]) {
+    file { "plenv::plugins ${user}":
       ensure  => directory,
       path    => $plugins,
       owner   => $user,
       group   => $group,
-      require => Exec["rbenv::checkout ${user}"],
+      require => Exec["plenv::checkout ${user}"],
     }
   }
 
-  exec { "rbenv::plugin::checkout ${user} ${plugin_name}":
+  exec { "plenv::plugin::checkout ${user} ${plugin_name}":
     command => "git clone ${source} ${destination}",
     user    => $user,
     group   => $group,
@@ -35,17 +35,17 @@ define rbenv::plugin(
     path    => ['/bin', '/usr/bin', '/usr/sbin'],
     timeout => $timeout,
     cwd     => $home_path,
-    require => File["rbenv::plugins ${user}"],
+    require => File["plenv::plugins ${user}"],
   }
 
-  exec { "rbenv::plugin::update ${user} ${plugin_name}":
+  exec { "plenv::plugin::update ${user} ${plugin_name}":
     command => 'git pull',
     user    => $user,
     group   => $group,
     path    => ['/bin', '/usr/bin', '/usr/sbin'],
     timeout => $timeout,
     cwd     => $destination,
-    require => Exec["rbenv::plugin::checkout ${user} ${plugin_name}"],
+    require => Exec["plenv::plugin::checkout ${user} ${plugin_name}"],
   }
 
 }

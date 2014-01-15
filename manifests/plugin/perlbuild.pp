@@ -1,14 +1,14 @@
-define rbenv::plugin::rubybuild(
+define plenv::plugin::perlbuild(
   $user   = $title,
-  $source = 'https://github.com/sstephenson/ruby-build.git',
+  $source = 'https://github.com/tokuhirom/Perl-Build.git',
   $group  = $user,
   $home   = '',
   $root   = ''
 ) {
-  rbenv::plugin { "rbenv::plugin::rubybuild::${user}":
+  plenv::plugin { "plenv::plugin::perlbuild::${user}":
     user        => $user,
     source      => $source,
-    plugin_name => 'ruby-build',
+    plugin_name => 'perl-build',
     group       => $group,
     home        => $home,
     root        => $root

@@ -1,19 +1,19 @@
-define rbenv::client(
+define plenv::client(
   $user,
   $home,
-  $ruby,
+  $perl,
   $owner,
   $source,
   $rc = '.profile'
 ) {
-  if ! defined(Exec["rbenv::compile ${owner} ${ruby}"]) {
-    fail("Ruby version ${ruby} is not compiled for ${owner}")
+  if ! defined(Exec["plenv::compile ${owner} ${perl}"]) {
+    fail("Perl version ${perl} is not compiled for ${owner}")
   }
 
-  file {"${user}/.rbenv":
+  file {"${user}/.plenv":
     ensure => link,
-    path   => "${home}/.rbenv",
-    target => "${source}/.rbenv",
+    path   => "${home}/.plenv",
+    target => "${source}/.plenv",
   }
 
   file {"${user}/${rc}":
@@ -22,16 +22,16 @@ define rbenv::client(
     target => "${source}/${rc}",
   }
 
-  file {"${user}/.gemrc":
-    ensure => link,
-    path   => "${home}/.gemrc",
-    target => "${source}/.gemrc",
-  }
+  #file {"${user}/.gemrc":
+  #  ensure => link,
+  #  path   => "${home}/.gemrc",
+  #  target => "${source}/.gemrc",
+  #}
 
-  file {"${user}/.rbenv-version":
+  file {"${user}/.plenv-version":
     ensure  => present,
-    path    => "${home}/.rbenv-version",
-    content => "${ruby}\n",
+    path    => "${home}/.plenv-version",
+    content => "${perl}\n",
   }
 
   file {"${user}/bin":
@@ -40,9 +40,9 @@ define rbenv::client(
     owner  => $user,
   }
 
-  file {"${user}/bin/rbenv":
+  file {"${user}/bin/plenv":
     ensure => link,
-    path   => "${home}/bin/rbenv",
-    target => "${source}/.rbenv/bin/rbenv",
+    path   => "${home}/bin/plenv",
+    target => "${source}/.plenv/bin/plenv",
   }
 }

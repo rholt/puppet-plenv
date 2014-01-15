@@ -1,3 +1,3 @@
-exec { 'rbenv::compile gem_tester 1.9.3-p125': 
+exec { 'pleenv::compile cpanm_tester 5.10.1': 
   command => '/bin/false',
 }

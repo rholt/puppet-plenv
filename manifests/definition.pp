@@ -1,31 +1,31 @@
-define rbenv::definition(
+define plenv::definition(
   $user,
   $source,
-  $ruby  = $title,
+  $perl  = $title,
   $group = $user,
   $home  = '',
   $root  = ''
 ) {
 
   $home_path = $home ? { '' => "/home/${user}",       default => $home }
-  $root_path = $root ? { '' => "${home_path}/.rbenv", default => $root }
+  $root_path = $root ? { '' => "${home_path}/.plenv", default => $root }
 
-  $destination = "${root_path}/plugins/ruby-build/share/ruby-build/${ruby}"
+  $destination = "${root_path}/plugins/perl-build/share/perl-build/${perl}"
 
   if $source =~ /^puppet:/ {
-    file { "rbenv::definition-file ${user} ${ruby}":
+    file { "plenv::definition-file ${user} ${perl}":
       ensure  => file,
       source  => $source,
       group   => $group,
       path    => $destination,
-      require => Exec["rbenv::plugin::checkout ${user} ruby-build"],
+      require => Exec["plenv::plugin::checkout ${user} perl-build"],
     }
   } elsif $source =~ /http(s)?:/ {
-    exec { "rbenv::definition-file ${user} ${ruby}":
+    exec { "plenv::definition-file ${user} ${perl}":
       command => "wget ${source} -O ${destination}",
       creates => $destination,
       user    => $user,
-      require => Exec["rbenv::plugin::checkout ${user} ruby-build"],
+      require => Exec["plenv::plugin::checkout ${user} perl-build"],
     }
   }
 }

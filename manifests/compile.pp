@@ -1,9 +1,9 @@
-# The following part compiles and installs the chosen ruby version,
-# using the "ruby-build" rbenv plugin.
+# The following part compiles and installs the chosen perl version,
+# using the "perl-build" plenv plugin.
 #
-define rbenv::compile(
+define plenv::compile(
   $user,
-  $ruby           = $title,
+  $perl           = $title,
   $group          = $user,
   $home           = '',
   $root           = '',
@@ -14,9 +14,8 @@ define rbenv::compile(
   $bundler        = present,
 ) {
 
-  # Workaround http://projects.puppetlabs.com/issues/9848
   $home_path = $home ? { '' => "/home/${user}", default => $home }
-  $root_path = $root ? { '' => "${home_path}/.rbenv", default => $root }
+  $root_path = $root ? { '' => "${home_path}/.plenv", default => $root }
 
   $bin         = "${root_path}/bin"
   $shims       = "${root_path}/shims"
@@ -25,7 +24,7 @@ define rbenv::compile(
   $path        = [ $shims, $bin, '/bin', '/usr/bin' ]
 
   # Keep flag saves source tree after building.
-  # This is required for some gems (e.g. debugger)
+  # This is required for some modules (e.g. debugger)
   if $keep {
     $keep_flag = '--keep '
   }
@@ -33,17 +32,17 @@ define rbenv::compile(
     $keep_flag = ''
   }
 
-  if ! defined( Class['rbenv::dependencies'] ) {
-    require rbenv::dependencies
+  if ! defined( Class['plenv::dependencies'] ) {
+    require plenv::dependencies
   }
 
-  # If no ruby-build has been specified and the default resource hasn't been
+  # If no perl-build has been specified and the default resource hasn't been
   # parsed
-  $custom_or_default = Rbenv::Plugin["rbenv::plugin::rubybuild::${user}"]
-  $default           = Rbenv::Plugin::Rubybuild["rbenv::rubybuild::${user}"]
+  $custom_or_default = Plenv::Plugin["plenv::plugin::perlbuild::${user}"]
+  $default           = Plenv::Plugin::Perlbuild["plenv::perlbuild::${user}"]
   if ! defined($custom_or_default) and ! defined($default) {
-    debug("No ruby-build found for ${user}, going to add the default one")
-    rbenv::plugin::rubybuild { "rbenv::rubybuild::${user}":
+    debug("No perl-build found for ${user}, going to add the default one")
+    plenv::plugin::perlbuild { "plenv::perlbuild::${user}":
       user   => $user,
       group  => $group,
       home   => $home,
@@ -52,36 +51,36 @@ define rbenv::compile(
   }
 
   if $source {
-    rbenv::definition { "rbenv::definition ${user} ${ruby}":
+    plenv::definition { "plenv::definition ${user} ${perl}":
       user    => $user,
       group   => $group,
       source  => $source,
-      ruby    => $ruby,
+      perl    => $perl,
       home    => $home,
       root    => $root,
-      require => Rbenv::Plugin["rbenv::plugin::rubybuild::${user}"],
-      before  => Exec["rbenv::compile ${user} ${ruby}"]
+      require => Plenv::Plugin["plenv::plugin::perlbuild::${user}"],
+      before  => Exec["plenv::compile ${user} ${perl}"]
     }
   }
 
   # Set Timeout to disabled cause we need a lot of time to compile.
   # Use HOME variable and define PATH correctly.
-  exec { "rbenv::compile ${user} ${ruby}":
-    command     => "rbenv install ${keep_flag}${ruby} && touch ${root_path}/.rehash",
+  exec { "plenv::compile ${user} ${perl}":
+    command     => "plenv install ${keep_flag}${perl} && touch ${root_path}/.rehash",
     timeout     => 0,
     user        => $user,
     group       => $group,
     cwd         => $home_path,
     environment => [ "HOME=${home_path}", "CONFIGURE_OPTS=${configure_opts}" ],
-    creates     => "${versions}/${ruby}",
+    creates     => "${versions}/${perl}",
     path        => $path,
     logoutput   => 'on_failure',
-    require     => Rbenv::Plugin["rbenv::plugin::rubybuild::${user}"],
-    before      => Exec["rbenv::rehash ${user} ${ruby}"],
+    require     => Rbenv::Plugin["plenv::plugin::perlbuild::${user}"],
+    before      => Exec["plenv::rehash ${user} ${perl}"],
   }
 
-  exec { "rbenv::rehash ${user} ${ruby}":
-    command     => "rbenv rehash && rm -f ${root_path}/.rehash",
+  exec { "plenv::rehash ${user} ${perl}":
+    command     => "plenv rehash && rm -f ${root_path}/.rehash",
     user        => $user,
     group       => $group,
     cwd         => $home_path,
@@ -93,24 +92,24 @@ define rbenv::compile(
 
   # Install bundler
   #
-  rbenv::gem {"rbenv::bundler ${user} ${ruby}":
+  plenv::gem {"plenv::bundler ${user} ${perl}":
     ensure => $bundler,
     user   => $user,
-    ruby   => $ruby,
+    perl   => $perl,
     gem    => 'bundler',
     home   => $home_path,
     root   => $root_path,
   }
 
-  # Set default global ruby version for rbenv, if requested
+  # Set default global perl version for plenv, if requested
   #
   if $global {
-    file { "rbenv::global ${user}":
+    file { "plenv::global ${user}":
       path    => $global_path,
-      content => "${ruby}\n",
+      content => "${perl}\n",
       owner   => $user,
       group   => $group,
-      require => Exec["rbenv::compile ${user} ${ruby}"]
+      require => Exec["plenv::compile ${user} ${perl}"]
     }
   }
 }

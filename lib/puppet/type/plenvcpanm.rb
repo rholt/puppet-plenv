@@ -1,5 +1,5 @@
-Puppet::Type.newtype(:rbenvgem) do
-  desc 'A Ruby Gem installed inside an rbenv-installed Ruby'
+Puppet::Type.newtype(:plenvmodule) do
+  desc 'A Perl Module installed inside an plenv-installed Perl'
 
   ensurable do
     newvalue(:present) { provider.install   }
@@ -40,27 +40,27 @@ Puppet::Type.newtype(:rbenvgem) do
   end
 
   newparam(:name) do
-    desc 'Gem qualified name within an rbenv repository'
+    desc 'Module qualified name within an plenv repository'
   end
 
-  newparam(:gemname) do
-    desc 'The Gem name'
+  newparam(:modulename) do
+    desc 'The Module name'
   end
 
-  newparam(:ruby) do
-    desc 'The ruby interpreter version'
+  newparam(:perl) do
+    desc 'The perl interpreter version'
   end
 
-  newparam(:rbenv) do
-    desc 'The rbenv root'
+  newparam(:plenv) do
+    desc 'The plenv root'
   end
 
   newparam(:user) do
-    desc 'The rbenv owner'
+    desc 'The plenv owner'
   end
 
   newparam(:source) do
-    desc 'The gem source'
+    desc 'The module source'
   end
 
 end

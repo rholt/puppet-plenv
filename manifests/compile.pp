@@ -10,7 +10,7 @@ define plenv::compile(
   $source         = '',
   $global         = false,
   $keep           = false,
-  $configure_opts = '--disable-install-doc',
+  $configure_opts = '',
   $carton         = present,
 ) {
 
@@ -36,33 +36,6 @@ define plenv::compile(
     require plenv::dependencies
   }
 
-  # If no perl-build has been specified and the default resource hasn't been
-  # parsed
-  $custom_or_default = Plenv::Plugin["plenv::plugin::perlbuild::${user}"]
-  $default           = Plenv::Plugin::Perlbuild["plenv::perlbuild::${user}"]
-  if ! defined($custom_or_default) and ! defined($default) {
-    debug("No perl-build found for ${user}, going to add the default one")
-    plenv::plugin::perlbuild { "plenv::perlbuild::${user}":
-      user   => $user,
-      group  => $group,
-      home   => $home,
-      root   => $root
-    }
-  }
-
-  if $source {
-    plenv::definition { "plenv::definition ${user} ${perl}":
-      user    => $user,
-      group   => $group,
-      source  => $source,
-      perl    => $perl,
-      home    => $home,
-      root    => $root,
-      require => Plenv::Plugin["plenv::plugin::perlbuild::${user}"],
-      before  => Exec["plenv::compile ${user} ${perl}"]
-    }
-  }
-
   # Set Timeout to disabled cause we need a lot of time to compile.
   # Use HOME variable and define PATH correctly.
   exec { "plenv::compile ${user} ${perl}":
@@ -75,7 +48,7 @@ define plenv::compile(
     creates     => "${versions}/${perl}",
     path        => $path,
     logoutput   => 'on_failure',
-    require     => Rbenv::Plugin["plenv::plugin::perlbuild::${user}"],
+    require     => Plenv::Plugin["plenv::plugin::perlbuild::${user}"],
     before      => Exec["plenv::rehash ${user} ${perl}"],
   }
 
@@ -90,17 +63,6 @@ define plenv::compile(
     logoutput   => 'on_failure',
   }
 
-  # Install carton
-  #
-  plenv::cpanm {"plenv::carton ${user} ${perl}":
-    ensure => $carton,
-    user   => $user,
-    perl   => $perl,
-    module => 'carton',
-    home   => $home_path,
-    root   => $root_path,
-  }
-
   # Set default global perl version for plenv, if requested
   #
   if $global {
@@ -112,4 +74,13 @@ define plenv::compile(
       require => Exec["plenv::compile ${user} ${perl}"]
     }
   }
+ 
+  plenv::installcpanm { "plenv::installcpanm ${user} ${perl}":
+      user => $user,
+	  perl => $perl,
+	  home => $home,
+	  root => $root,
+	  require => Exec["plenv::compile ${user} ${perl}"]
+  }
+
 }

@@ -25,6 +25,6 @@ define plenv::cpanm(
     perl    => $perl,
     plenv   => "${root_path}/versions/${perl}",
     source  => $source,
-    require => Exec["plenv::compile ${user} ${perl}"],
+    require => Exec["plenv::installcpanm ${user} ${perl}"],
   }
 }

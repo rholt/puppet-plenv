@@ -51,4 +51,13 @@ define plenv::install(
     path    => "${root_path}/cache",
     require => Exec["plenv::checkout ${user}"]
   }
+
+  plenv::plugin::perlbuild { "plenv::plugins::perlbuild ${user}": 
+	user    => $user,
+	group   => $group,
+	home    => $home,
+	root    => $root,
+	require => File["plenv::cache-dir ${user}"]
+  }
+
 }

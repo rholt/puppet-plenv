@@ -5,7 +5,7 @@ describe 'plenv::compile', :type => :define do
   let(:perl_version) { '5.10.1' }
   let(:title)        { "plenv::compile::#{user}::#{perl_version}" }
   let(:dot_plenv)    { "/home/#{user}/.plenv" }
-  let(:carton)      { '1.0.12' }
+  let(:carton)       { '1.0.12' }
   let(:params)       { {:user => user, :perl => perl_version, :global => true, :carton => carton} }
 
   it "installs perl of the chosen version" do

@@ -4,7 +4,7 @@
 define plenv::cpanm(
   $user,
   $perl,
-  $modulename = $title,
+  $module = $title,
   $home   = '',
   $root   = '',
   $source = '',
@@ -15,13 +15,13 @@ define plenv::cpanm(
   $root_path = $root ? { '' => "${home_path}/.plenv", default => $root }
 
   if ! defined( Exec["plenv::compile ${user} ${perl}"] ) {
-    fail("plenv-perl ${perl} for user ${user} not found in catalog")
+    fail("Plenv-Perl ${perl} for user ${user} not found in catalog")
   }
 
-  plenvcpanm {"${user}/${perl}/${modulename}/${ensure}":
+  plenvcpanm {"${user}/${perl}/${module}/${ensure}":
     ensure  => $ensure,
     user    => $user,
-    module  => $modulename,
+    module  => $module,
     perl    => $perl,
     plenv   => "${root_path}/versions/${perl}",
     source  => $source,

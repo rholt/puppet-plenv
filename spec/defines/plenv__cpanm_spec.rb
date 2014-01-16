@@ -1,14 +1,16 @@
 require 'spec_helper'
 
 describe 'plenv::cpanm', :type => :define do
+
   # User must be unique to this spec so that our fixture doesn't break other specs.
   # User and version must match what's in the Exec[plenv::compile...] 
   # in spec/fixtures/manifests/site.pp so that the 'is this perl installed' test
   # in plenvcpanm.pp will pass.
+
   let(:user)           { 'cpanm_tester' }
   let(:perl_version)   { '5.10.1' }
   let(:title)          { 'somecpanm' }
-  let(:cpanm_name)       { params[:cpanm] || title }
+  let(:module_name)    { params[:module] || title }
   let(:plenv)          { "/home/#{user}/.plenv/versions/#{perl_version}" }
   let(:_ensure)        { params[:ensure] || 'present' }
   let(:source)         { params[:source] || '' }
@@ -30,16 +32,16 @@ describe 'plenv::cpanm', :type => :define do
 
   shared_examples 'plenvcpanm' do
     it { 
-      should contain_plenvcpanm("#{user}/#{perl_version}/#{cpanm_name}/#{_ensure}").with(
+      should contain_plenvcpanm("#{user}/#{perl_version}/#{module_name}/#{_ensure}").with(
         'ensure' => _ensure,
         'user' => params[:user],
-        'cpanmname' => cpanm_name,
+        'module' => module_name,
         'perl' => params[:perl],
         'plenv' => plenv,
         'source' => source
     ) 
     }
-        end
+    end
 
   it_behaves_like "plenvcpanm"
 
@@ -55,11 +57,11 @@ describe 'plenv::cpanm', :type => :define do
       @params[:ensure] = 'absent'
     end
     it_behaves_like "plenvcpanm"
-    end
+  end
 
   describe "when there is a cpanm param" do
     before do
-      @params[:cpanm] = 'some-other-cpanm'
+      @params[:module] = 'some-other-cpanm'
     end
     it_behaves_like "plenvcpanm"
   end

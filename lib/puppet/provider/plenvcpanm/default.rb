@@ -1,4 +1,4 @@
-Puppet::Type.type(:plenvmodule).provide :default do
+Puppet::Type.type(:plenvcpanm).provide :default do
   desc "Maintains cpan modules inside a plenv setup"
 
   commands :su => 'su'
@@ -26,7 +26,7 @@ Puppet::Type.type(:plenvmodule).provide :default do
 
   private
     def module_name
-      resource[:modulename]
+      resource[:module]
     end
 
     def cpanm(*args)
@@ -35,7 +35,8 @@ Puppet::Type.type(:plenvmodule).provide :default do
     end
 
     def list(where = :local)
-      args = ['list', where == :remote ? '--remote' : '--local', "#{module_name}$"]
+      args = ['list', "#{module_name}$" ]
+      #args = ['list', where == :remote ? '--remote' : '--local', "#{module}$"]
 
       cpanm(*args).lines.map do |line|
         line =~ /^(?:\S+)\s+\((.+)\)/

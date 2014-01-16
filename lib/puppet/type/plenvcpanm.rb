@@ -1,4 +1,4 @@
-Puppet::Type.newtype(:plenvmodule) do
+Puppet::Type.newtype(:plenvcpanm) do
   desc 'A Perl Module installed inside an plenv-installed Perl'
 
   ensurable do
@@ -43,7 +43,7 @@ Puppet::Type.newtype(:plenvmodule) do
     desc 'Module qualified name within an plenv repository'
   end
 
-  newparam(:modulename) do
+  newparam(:module) do
     desc 'The Module name'
   end
 

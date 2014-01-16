@@ -1,3 +1,3 @@
-exec { 'pleenv::compile cpanm_tester 5.10.1': 
+exec { 'plenv::compile cpanm_tester 5.10.1': 
   command => '/bin/false',
 }

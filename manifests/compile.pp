@@ -11,7 +11,7 @@ define plenv::compile(
   $global         = false,
   $keep           = false,
   $configure_opts = '--disable-install-doc',
-  $bundler        = present,
+  $carton         = present,
 ) {
 
   $home_path = $home ? { '' => "/home/${user}", default => $home }
@@ -90,13 +90,13 @@ define plenv::compile(
     logoutput   => 'on_failure',
   }
 
-  # Install bundler
+  # Install carton
   #
-  plenv::gem {"plenv::bundler ${user} ${perl}":
-    ensure => $bundler,
+  plenv::cpanm {"plenv::carton ${user} ${perl}":
+    ensure => $carton,
     user   => $user,
     perl   => $perl,
-    gem    => 'bundler',
+    module => 'carton',
     home   => $home_path,
     root   => $root_path,
   }

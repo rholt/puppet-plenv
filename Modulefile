@@ -1,4 +1,4 @@
-name    'rholt-puppet-plenv'
+name    'rholt-plenv'
 version '0.0.1'
 author 'rholt'
 license 'MIT'

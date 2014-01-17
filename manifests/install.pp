@@ -52,7 +52,7 @@ define plenv::install(
     require => Exec["plenv::checkout ${user}"]
   }
 
-  plenv::plugin::perlbuild { "plenv::plugins::perlbuild ${user}": 
+  plenv::plugin::perlbuild { "plenv::perlbuild::${user}": 
 	user    => $user,
 	group   => $group,
 	home    => $home,

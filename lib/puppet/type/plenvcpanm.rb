@@ -47,6 +47,10 @@ Puppet::Type.newtype(:plenvcpanm) do
     desc 'The Module name'
   end
 
+  newparam(:modversion) do
+    desc 'The Module version string'
+  end
+
   newparam(:perl) do
     desc 'The perl interpreter version'
   end

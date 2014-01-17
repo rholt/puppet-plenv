@@ -7,6 +7,7 @@ define plenv::installcpanm(
   $home           = '',
   $root           = '',
   $source         = '',
+  $carton         = present
 ) {
 
   $home_path = $home ? { '' => "/home/${user}", default => $home }
@@ -47,17 +48,5 @@ define plenv::installcpanm(
     home   => $home_path,
     root   => $root_path,
 	require => Exec["plenv::installcpanm ${user} ${perl}"]
-  }
-
-  # Set default global perl version for plenv, if requested
-  #
-  if $global {
-    file { "plenv::global ${user}":
-      path    => $global_path,
-      content => "${perl}\n",
-      owner   => $user,
-      group   => $group,
-      require => Exec["plenv::compile ${user} ${perl}"]
-    }
   }
 }

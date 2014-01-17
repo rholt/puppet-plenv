@@ -48,7 +48,7 @@ define plenv::compile(
     creates     => "${versions}/${perl}",
     path        => $path,
     logoutput   => 'on_failure',
-    require     => Plenv::Plugin["plenv::plugin::perlbuild::${user}"],
+    require     => Plenv::Plugin::Perlbuild["plenv::perlbuild::${user}"],
     before      => Exec["plenv::rehash ${user} ${perl}"],
   }
 

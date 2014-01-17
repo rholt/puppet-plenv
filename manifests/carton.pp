@@ -21,11 +21,11 @@ define plenv::carton(
     group   => $group,
     content => $cpanfile,
     backup  => false,
-    require => Plenv::Client[$user],
+    #require => Plenv::Client[$user],
   }
 
   exec {"${user} carton":
-    command   => "carton",
+    command   => "carton install",
     cwd       => $home,
     user      => $user,
     group     => $group,

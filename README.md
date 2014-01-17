@@ -1,149 +1,112 @@
-# Puppet-Rbenv
-
-[![Build Status](https://secure.travis-ci.org/alup/puppet-rbenv.png?branch=master)](http://travis-ci.org/alup/puppet-rbenv)
-[![endorse](http://api.coderwall.com/alup/endorsecount.png)](http://coderwall.com/alup)
+# Puppet-Plenv
 
 ## About
 
-This project provides powerful manifests for the installation of
-[rbenv](https://github.com/sstephenson/rbenv) (Ruby Version Management).
+This project provides manifests for the installation of
+[plenv](https://github.com/tokuhirom/plenv) (perl Version Management).
 In a nutshell, it supports the following conveniences:
 
-* Defined resources for the installation of rbenvs for one or more users, shared or standalone.
-* Resources for the compilation of ruby interpreters (one or many, custom or predefined ruby build definitions), under specific rbenvs, users.
-* Tools for the installation of arbitrary gems under specific rbenvs.
-* Infrastructure to support rbenv plugins. We have already included [ruby-build](https://github.com/sstephenson/ruby-build) and [rbenv-vars](https://github.com/sstephenson/rbenv-vars) plugins.
-* Resource for handling `bundler`.
+* Defined resources for the installation of perl envs for one or more users.
+* Resources for the compilation of perl interpreters (one or many, predefined perl build definitions), under specific plenvs, users.
+* Tools for the installation of arbitrary CPAN modules under specific plenvs.
+* Infrastructure to support plenv plugins. [perl-build](https://github.com/tokuhirom/perl-build) is already included
+* Resource for handling `Carton`.
 
-## Rbenv installation
+## Plenv installation
 
 You can use the module in your manifest with the following code:
 
 ```
-rbenv::install { "someuser":
+plenv::install { "someuser":
   group => 'project',
   home  => '/project'
 }
 ```
 
-This will apply an rbenv installation under "someuser" home dir
-and place it into ".rbenv". You can change the resource title to
-your taste, and pass the user on which install rbenv using the
+This will apply an plenv installation under "someuser" home dir
+and place it into ".plenv". You can change the resource title to
+your taste, and pass the user on which install plenv using the
 `user` parameter.
 
-The rbenv directory can be changed by passing the "root" parameter,
+The plenv directory can be changed by passing the "root" parameter,
 that must be an absolute path.
 
-## Ruby compilation
+## Perl compilation
 
-To compile a ruby interpreter, you use `rbenv::compile` as follows:
+To compile a perl interpreter, you use `plenv::compile` as follows:
 
 ```
-rbenv::compile { "1.9.3-p327":
+plenv::compile { "1.9.3-p327":
   user => "someuser",
   home => "/project",
 }
 ```
 
-The resource title is used as the ruby version, but if you have
-multiple rubies under multiple users, you'll have to define them
+The resource title is used as the perl version, but if you have
+multiple Perls under multiple users, you'll have to define them
 explicitly:
 
 ```
-rbenv::compile { "foo/1.8.7":
+plenv::compile { "foo/1.8.7":
   user => "foo",
-  ruby => "1.8.7-p370",
+  perl => "1.8.7-p370",
 }
 
-rbenv::compile { "bar/1.8.7":
+plenv::compile { "bar/1.8.7":
   user => bar",
-  ruby => "1.8.7-p370",
+  perl => "1.8.7-p370",
 }
 ```
 
-`rbenv rehash` is performed each time a new ruby or a new gem is
+`plenv rehash` is performed each time a new perl or a new CPAN module is
 installed.
 
 You can use the `global => true` parameter to set an interpreter as the
-default (`rbenv global`) one for the given user. Please note that only one global
+default (`plenv global`) one for the given user. Please note that only one global
 is allowed, duplicate resources will be defined if you specify
-multiple global ruby version.
+multiple global perl version.
 
-You can also provide a custom build definition to ruby-build by
-specifying a `source` that can either be a `puppet:` source or
-a file to be downloaded using `wget`:
-
-```
-rbenv::compile { "patched-ree":
-  user   => "someuser",
-  home   => "/project",
-  source => "puppet://path-to-definition"
-}
-```
-
-If you're using debugger gems, you'll probably need to keep source tree after building.
+If you're using debugger CPAN modules, you'll probably need to keep source tree after building.
 This is achieved by passing `keep => true` parameter.
 
 ```
-rbenv::compile { "bar/1.8.7":
+plenv::compile { "bar/1.8.7":
   user => bar",
-  ruby => "1.8.7-p370",
+  perl => "1.8.7-p370",
   keep => true,
 }
 ```
 
-## Gem installation
+## CPAN module installation
 
-You can install and keep gems updated for a specific ruby interpreter:
+You can install and keep modules updated for a specific perl interpreter:
 
 ```
-rbenv::gem { "unicorn":
+plenv::cpanm { "Acme::Bleach":
   user => "foobarbaz",
-  ruby => "1.9.3-p327",
+  perl => "1.9.3-p327",
 }
 ```
 
-Gems are handled using a custom Package provider that handles gems,
-somewhat inspired by Puppet's Package one - thus `absent` and `latest`
-work as expected.
+CPAN Modules are handled using a custom Package provider that handles cpanm,
 
-You can specify a gem source with the optional `source` parameter:
+## plenv plugins
 
-```
-rbenv::gem { "my_private_gem":
-  user   => "foobarbaz",
-  ruby   => "1.9.3-p327",
-  source => "http://gems.mydoma.in/"
-}
-```
-
-## rbenv plugins
-
-To add a plugin to a rbenv installation, you use `rbenv::plugin` as follows:
+To add a plugin to a plenv installation, you use `plenv::plugin` as follows:
 
 ```
-rbenv::plugin { "my-plugin":
+plenv::plugin { "my-plugin":
   user   => "someuser",
   source => "git://github.com/user/my-plugin.git"
 }
 ```
 
-There's also a built-in resource to add [rbenv-vars](https://github.com/sstephenson/rbenv-vars)
-for a user:
-
-```
-rbenv::plugin::rbenvvars { "someuser":
-  # Optional:
-  # source => "git://path-to-your/custom/rbenv-vars.git"
-}
-```
-
-*NOTICE: `rbenv::install` automatically requires [ruby-build](https://github.com/sstephenson/ruby-build)
-to compile rubies, if you want to use a different repository, you can specify
+*NOTICE: `plenv::install` automatically requires [perl-build](https://github.com/tokuhirom/perl-build)
+to compile perls, if you want to use a different repository, you can specify
 the resource on a separate manifest:*
 
 ```
-rbenv::plugin::rubybuild { "someuser":
+plenv::plugin::perlbuild { "someuser":
   source => "git://path-to-your/git/repo"
 }
 ```
@@ -154,7 +117,7 @@ You can install the latest release of this module by using the following
 command:
 
 ```
-puppet module install alup-rbenv
+puppet module install rholt-plenv
 ```
 
 ## Usage with Vagrant
@@ -170,18 +133,18 @@ Vagrant::Config.run do |config|
    config.vm.provision :puppet, :facter => { "osfamily" => "debian" }, :module_path => "modules" do |puppet|
      puppet.manifests_path = "manifests"
      puppet.manifest_file  = "base.pp"
-     puppet.options        = %w[ --libdir=\\$modulepath/rbenv/lib ]
+     puppet.options        = %w[ --libdir=\\$modulepath/plenv/lib ]
    end
 end
 ```
 
-The `--libdir=\\$modulepath/rbenv/lib` argument is important to make
-puppet aware of the rbenvgem custom provider and type.
+The `--libdir=\\$modulepath/plenv/lib` argument is important to make
+puppet aware of the plenvcpanm custom provider and type.
 
 
 ## Notes
 
-This project contains a custom `rbenvgem` type for use by the client via module.
+This project contains a custom `plenvcpanm` type for use by the client via module.
 
 Custom types and facts (plugins) are gathered together and distributed via a file mount on
 your Puppet master.
@@ -202,8 +165,41 @@ pluginsync = true
 * SuSE
 * Ubuntu
 
+# BUG REPORTING
+
+Plese use github issues: [http://github.com/rholt/puppet-plenv/](http://github.com/rholt/puppt-plenv/).
+
+# AUTHOR
+
+Rohan Holt <rohan.holt @ GMAIL COM>
+
+# SEE ALSO
+
+[App::perlbrew](http://search.cpan.org/perldoc?App::perlbrew) provides same feature. But plenv provides project local file: __ .perl-version __.
+
+Most of part was inspired from [puppet-rbenv](https://github.com/alup/puppet-rbenv).
+
+# LICENSE
+
+## plenv itself
+
+Copyright (C) Rohan Holt
+
+This library is free software; you can redistribute it and/or modify
+it under the same terms as Perl itself.
+
+## puppet-rbenv
+
+puppet-plenv uses puppet-rbenv code
+
+    (The MIT license)
+
+    Copyright 2012 Andreas Loupasakis, Marcello Barnaba <vjt@openssl.it>, Fabio Rehm$
+
+    Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
+
+    The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+
+    THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 ## License
 
-MIT License.
-
-Copyright 2012 Andreas Loupasakis, Marcello Barnaba <vjt@openssl.it>, Fabio Rehm

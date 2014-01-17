@@ -17,6 +17,10 @@ describe 'plenv::install', :type => :define do
         with_path(['/bin','/usr/bin','/usr/sbin'])
     end
 
+    it "installs perl-build plugin from official repository" do
+       should contain_plenv__plugin__perlbuild("plenv::perlbuild::#{user}")
+    end
+
     it "creates a cache folder" do
       should contain_file("plenv::cache-dir #{user}").
         with(:ensure => "directory", :path => "/home/#{user}/.plenv/cache")

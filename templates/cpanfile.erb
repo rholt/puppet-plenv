@@ -1,3 +1,7 @@
-<%- @modules.each do |module| -%>
-require '<%= module %>'
-<% end %>
+<%- @modules.each do |entry| -%>
+<%- if entry.kind_of?(Array) -%>
+require '<%= entry[0] %>', '<%= entry[1] %>';
+<%- else -%>
+require '<%= entry %>';
+<%- end -%>
+<%- end -%>

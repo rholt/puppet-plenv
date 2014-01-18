@@ -5,21 +5,21 @@ describe 'plenv::dependencies' do
 
   context 'Ubuntu' do
     let(:facts) { {:osfamily => 'debian'} }
-    it { should include_class('plenv::dependencies::ubuntu') }
+    it { should contain_class('plenv::dependencies::ubuntu') }
   end
 
   context 'RedHat' do
     let(:facts) { {:osfamily => 'redhat'} }
-    it { should include_class('plenv::dependencies::centos') }
+    it { should contain_class('plenv::dependencies::centos') }
   end
 
   context 'Suse' do
     let(:facts) { {:osfamily => 'suse'} }
-    it { should include_class('plenv::dependencies::suse') }
+    it { should contain_class('plenv::dependencies::suse') }
   end
 
   context 'Amazon Linux' do
     let(:facts) { {:osfamily => 'Linux'} }
-    it { should include_class('plenv::dependencies::centos') }
+    it { should contain_class('plenv::dependencies::centos') }
   end
 end

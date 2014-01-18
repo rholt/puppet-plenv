@@ -24,7 +24,7 @@ Puppet::Type.type(:plenvcpanm).provide :default do
   private
 
     def version_string
-	  resource[:version]
+	  resource[:modversion]
 	end
 
     def module_name

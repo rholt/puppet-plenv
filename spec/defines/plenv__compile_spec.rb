@@ -5,8 +5,7 @@ describe 'plenv::compile', :type => :define do
   let(:perl_version) { '5.10.1' }
   let(:title)        { "plenv::compile::#{user}::#{perl_version}" }
   let(:dot_plenv)    { "/home/#{user}/.plenv" }
-  let(:carton)       { 'present' }
-  let(:params)       { {:user => user, :perl => perl_version, :global => true, :carton => carton} }
+  let(:params)       { {:user => user, :perl => perl_version, :global => true} }
 
   it "installs perl of the chosen version" do
     should contain_exec("plenv::compile #{user} #{perl_version}").
@@ -24,8 +23,4 @@ describe 'plenv::compile', :type => :define do
       with_require("Exec[plenv::compile #{user} #{perl_version}]")
   end
 
-  it "installs carton" do
-    should contain_plenv__cpanm("plenv::carton #{user} #{perl_version}").
-      with_ensure(carton)
-  end
 end

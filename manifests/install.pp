@@ -3,7 +3,7 @@ define plenv::install(
   $group = $user,
   $home  = '',
   $root  = '',
-  $rc    = '.profile'
+  $rc    = '.bash_profile'
 ) {
 
   $home_path = $home ? { '' => "/home/${user}", default => $home }

@@ -1,6 +1,7 @@
 define plenv::carton(
   $home,
   $user,
+  $perl    = $title,
   $group   = $user,
   $content = '',
   $modules = ''
@@ -21,11 +22,10 @@ define plenv::carton(
     group   => $group,
     content => $cpanfile,
     backup  => false,
-    #require => Plenv::Client[$user],
   }
 
-  exec {"${user} carton":
-    command   => "carton install",
+  exec {"plenv::carton::${user} ${perl}":
+    command   => "env PLENV_VERSION=${perl} carton install",
     cwd       => $home,
     user      => $user,
     group     => $group,
@@ -33,4 +33,5 @@ define plenv::carton(
     creates   => "${home}/cpanfile.lock",
     subscribe => File["${user}/cpanfile"],
   }
+
 }

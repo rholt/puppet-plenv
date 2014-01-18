@@ -23,18 +23,15 @@ define plenv::installcpanm(
     require plenv::dependencies
   }
 
-  # Set Timeout to disabled cause we need a lot of time to compile.
-  # Use HOME variable and define PATH correctly.
   exec { "plenv::installcpanm ${user} ${perl}":
     command     => "env PLENV_VERSION=${perl} plenv install-cpanm",
-    timeout     => 0,
+    timeout     => 100,
     user        => $user,
     group       => $group,
     cwd         => $home_path,
     environment => [ "HOME=${home_path}" ],
     path        => $path,
     logoutput   => 'on_failure',
-    #require     => Plenv::Plugin["plenv::plugin::perlbuild::${user}"],
     require     => Exec["plenv::compile ${user} ${perl}"],
   }
 

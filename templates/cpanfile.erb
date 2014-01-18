@@ -1,7 +1,7 @@
 <%- @modules.each do |entry| -%>
 <%- if entry.kind_of?(Array) -%>
-require '<%= entry[0] %>', '<%= entry[1] %>';
+requires '<%= entry[0] %>', '<%= entry[1] %>';
 <%- else -%>
-require '<%= entry %>';
+requires '<%= entry %>';
 <%- end -%>
 <%- end -%>

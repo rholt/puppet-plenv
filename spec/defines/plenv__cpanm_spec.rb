@@ -59,11 +59,18 @@ describe 'plenv::cpanm', :type => :define do
     it_behaves_like "plenvcpanm"
   end
 
-  describe "when there is a cpanm param" do
+  describe "when there is a module param" do
     before do
-      @params[:module] = 'some-other-cpanm'
+      @params[:module] = 'some-other-module'
     end
     it_behaves_like "plenvcpanm"
+  end
+
+  describe "when there is a modversion param" do
+     before do
+	    @params[:modversion] = '1.1.1'
+	 end
+	 it_behaves_like "plenvcpanm"
   end
 
   describe "when there is a home param" do

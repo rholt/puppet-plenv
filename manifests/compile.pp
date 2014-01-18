@@ -11,7 +11,6 @@ define plenv::compile(
   $global         = false,
   $keep           = false,
   $configure_opts = '',
-  $carton         = present,
 ) {
 
   $home_path = $home ? { '' => "/home/${user}", default => $home }
@@ -52,17 +51,6 @@ define plenv::compile(
     before      => Exec["plenv::rehash ${user} ${perl}"],
   }
 
-  exec { "plenv::rehash ${user} ${perl}":
-    command     => "plenv rehash && rm -f ${root_path}/.rehash",
-    user        => $user,
-    group       => $group,
-    cwd         => $home_path,
-    onlyif      => "[ -e '${root_path}/.rehash' ]",
-    environment => [ "HOME=${home_path}" ],
-    path        => $path,
-    logoutput   => 'on_failure',
-  }
-
   # Set default global perl version for plenv, if requested
   #
   if $global {
@@ -83,4 +71,14 @@ define plenv::compile(
 	  require => Exec["plenv::compile ${user} ${perl}"]
   }
 
+  exec { "plenv::rehash ${user} ${perl}":
+    command     => "plenv rehash && rm -f ${root_path}/.rehash",
+    user        => $user,
+    group       => $group,
+    cwd         => $home_path,
+    onlyif      => "[ -e '${root_path}/.rehash' ]",
+    environment => [ "HOME=${home_path}" ],
+    path        => $path,
+    logoutput   => 'on_failure',
+  }
 }

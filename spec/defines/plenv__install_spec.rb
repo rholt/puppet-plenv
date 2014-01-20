@@ -13,7 +13,7 @@ describe 'plenv::install', :type => :define do
 
     it "appends in a rc file, a command to include .plenv/bin folder in PATH env variable" do
       should contain_exec("plenv::shrc #{user}").
-        with_command("echo 'source /home/#{user}/.plenvrc' >> /home/#{user}/.profile").
+        with_command("echo 'source /home/#{user}/.plenvrc' >> /home/#{user}/.bash_profile").
         with_path(['/bin','/usr/bin','/usr/sbin'])
     end
 

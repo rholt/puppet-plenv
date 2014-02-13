@@ -23,7 +23,7 @@ describe 'plenv::install', :type => :define do
     end
 
     it "installs perl-build plugin from official repository" do
-       should contain_plenv__plugin__perlbuild("plenv::perlbuild::#{user}")
+       should contain_plenv__plugin__perlbuild("plenv::perlbuild #{user}")
     end
   end
 end

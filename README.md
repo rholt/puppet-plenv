@@ -17,10 +17,20 @@ In a nutshell, it supports the following conveniences:
 You can use the module in your manifest with the following code:
 
 ```
-plenv::install { "someuser":
-  group => 'project',
-  home  => '/project'
+plenv::install { 'someuser': }
+
+
+plenv::compile { '5.18.2':
+    user => 'someuser',
+    global => true
 }
+
+plenv::carton { '5.18.2':
+    home => '/home/someuser',
+    user => 'someuser',
+    modules => [ ['Moose','2.1201'],['Module::Starter::PBP','0.0.3'] ]
+}
+
 ```
 
 This will apply an plenv installation under "someuser" home dir
@@ -28,33 +38,26 @@ and place it into ".plenv". You can change the resource title to
 your taste, and pass the user on which install plenv using the
 `user` parameter.
 
-The plenv directory can be changed by passing the "root" parameter,
-that must be an absolute path.
+It will compile perl version 5.18.2 into someusers plenv environment and set this as the global version.
+
+It will create a cpanfile containing the listed modules and versions into the  directory specified by 'home'
+and then use Carton to install those modules.
 
 ## Perl compilation
-
-To compile a perl interpreter, you use `plenv::compile` as follows:
-
-```
-plenv::compile { "1.9.3-p327":
-  user => "someuser",
-  home => "/project",
-}
-```
 
 The resource title is used as the perl version, but if you have
 multiple Perls under multiple users, you'll have to define them
 explicitly:
 
 ```
-plenv::compile { "foo/1.8.7":
-  user => "foo",
-  perl => "1.8.7-p370",
+plenv::compile { "someuser/5.18.2":
+  user => "someuser",
+  perl => "5.18.2",
 }
 
-plenv::compile { "bar/1.8.7":
-  user => bar",
-  perl => "1.8.7-p370",
+plenv::compile { "otheruser/5.14.2":
+  user => otheruser",
+  perl => "5.14.2",
 }
 ```
 
@@ -66,16 +69,6 @@ default (`plenv global`) one for the given user. Please note that only one globa
 is allowed, duplicate resources will be defined if you specify
 multiple global perl version.
 
-If you're using debugger CPAN modules, you'll probably need to keep source tree after building.
-This is achieved by passing `keep => true` parameter.
-
-```
-plenv::compile { "bar/1.8.7":
-  user => bar",
-  perl => "1.8.7-p370",
-  keep => true,
-}
-```
 
 ## CPAN module installation
 
@@ -83,12 +76,10 @@ You can install and keep modules updated for a specific perl interpreter:
 
 ```
 plenv::cpanm { "Acme::Bleach":
-  user => "foobarbaz",
-  perl => "1.9.3-p327",
+  user => "someuser",
+  perl => "5.18.2",
 }
 ```
-
-CPAN Modules are handled using a custom Package provider that handles cpanm,
 
 ## plenv plugins
 
@@ -109,15 +100,6 @@ the resource on a separate manifest:*
 plenv::plugin::perlbuild { "someuser":
   source => "git://path-to-your/git/repo"
 }
-```
-
-## Install module from puppet forge
-
-You can install the latest release of this module by using the following
-command:
-
-```
-puppet module install rholt-plenv
 ```
 
 ## Usage with Vagrant
@@ -167,7 +149,7 @@ pluginsync = true
 
 # BUG REPORTING
 
-Plese use github issues: [http://github.com/rholt/puppet-plenv/](http://github.com/rholt/puppt-plenv/).
+Plese use github issues: [http://github.com/rholt/puppet-plenv/](http://github.com/rholt/puppet-plenv/).
 
 # AUTHOR
 
@@ -177,29 +159,29 @@ Rohan Holt <rohan.holt @ GMAIL COM>
 
 [App::perlbrew](http://search.cpan.org/perldoc?App::perlbrew) provides same feature. But plenv provides project local file: __ .perl-version __.
 
-Most of part was inspired from [puppet-rbenv](https://github.com/alup/puppet-rbenv).
+Most of puppet-plenv was derived from [puppet-rbenv](https://github.com/alup/puppet-rbenv).
 
 # LICENSE
 
 ## plenv itself
 
-Copyright (C) Rohan Holt
+SEE [plenv on Github](https://github.com/tokuhirom/plenv) for licensing
 
 This library is free software; you can redistribute it and/or modify
 it under the same terms as Perl itself.
 
-## puppet-rbenv
-
-puppet-plenv uses puppet-rbenv code
+## puppet-plenv
 
     (The MIT license)
 
     Copyright 2012 Andreas Loupasakis, Marcello Barnaba <vjt@openssl.it>, Fabio Rehm$
+    Modified work Copyright 2014 Rohan Holt
 
     Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
 
     The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
 
     THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+
 ## License
 

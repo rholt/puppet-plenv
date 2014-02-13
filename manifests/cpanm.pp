@@ -19,7 +19,7 @@ define plenv::cpanm(
     fail("Plenv-Perl ${perl} for user ${user} not found in catalog")
   }
 
-  plenvcpanm {"${user}/${perl}/${module}/${ensure}":
+  plenvcpanm {"${user}/${perl}/${module}":
     ensure  => $ensure,
     user    => $user,
     module  => $module,

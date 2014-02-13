@@ -9,8 +9,6 @@ define plenv::compile(
   $root           = '',
   $source         = '',
   $global         = false,
-  $keep           = false,
-  $configure_opts = '',
 ) {
 
   $home_path = $home ? { '' => "/home/${user}", default => $home }
@@ -21,15 +19,6 @@ define plenv::compile(
   $versions    = "${root_path}/versions"
   $global_path = "${root_path}/version"
   $path        = [ $shims, $bin, '/bin', '/usr/bin' ]
-
-  # Keep flag saves source tree after building.
-  # This is required for some modules (e.g. debugger)
-  if $keep {
-    $keep_flag = '--keep '
-  }
-  else {
-    $keep_flag = ''
-  }
 
   if ! defined( Class['plenv::dependencies'] ) {
     require plenv::dependencies
@@ -43,11 +32,11 @@ define plenv::compile(
     user        => $user,
     group       => $group,
     cwd         => $home_path,
-    environment => [ "HOME=${home_path}", "CONFIGURE_OPTS=${configure_opts}" ],
+    environment => [ "HOME=${home_path}" ],
     creates     => "${versions}/${perl}",
     path        => $path,
     logoutput   => 'on_failure',
-    require     => Plenv::Plugin::Perlbuild["plenv::perlbuild::${user}"],
+    require     => Plenv::Plugin::Perlbuild["plenv::perlbuild ${user}"],
     before      => Exec["plenv::rehash ${user} ${perl}"],
   }
 
@@ -62,7 +51,7 @@ define plenv::compile(
       require => Exec["plenv::compile ${user} ${perl}"]
     }
   }
- 
+
   plenv::installcpanm { "plenv::installcpanm ${user} ${perl}":
       user => $user,
 	  perl => $perl,

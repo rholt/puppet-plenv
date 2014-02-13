@@ -32,7 +32,7 @@ describe 'plenv::cpanm', :type => :define do
 
   shared_examples 'plenvcpanm' do
     it { 
-      should contain_plenvcpanm("#{user}/#{perl_version}/#{module_name}/#{_ensure}").with(
+      should contain_plenvcpanm("#{user}/#{perl_version}/#{module_name}").with(
         'ensure' => _ensure,
         'user' => params[:user],
         'module' => module_name,

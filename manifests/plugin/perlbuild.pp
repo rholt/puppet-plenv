@@ -5,7 +5,7 @@ define plenv::plugin::perlbuild(
   $home   = '',
   $root   = ''
 ) {
-  plenv::plugin { "plenv::perlbuild::${user}":
+  plenv::plugin { "plenv::perlbuild ${user}":
     user        => $user,
     source      => $source,
     plugin_name => 'perl-build',

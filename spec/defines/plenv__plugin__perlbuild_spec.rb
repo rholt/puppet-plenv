@@ -5,7 +5,7 @@ describe 'plenv::plugin::perlbuild', :type => :define do
   let(:title)     { user }
 
   it {
-    should contain_plenv__plugin("plenv::perlbuild::#{user}").with(
+    should contain_plenv__plugin("plenv::perlbuild #{user}").with(
       :plugin_name => 'perl-build',
       :source      => 'https://github.com/tokuhirom/Perl-Build.git',
       :user        => user

@@ -24,14 +24,15 @@ define plenv::carton(
     backup  => false,
   }
 
-  exec {"plenv::carton::${user} ${perl}":
-    command   => "env PLENV_VERSION=${perl} carton install",
+  exec {"plenv::carton ${user} ${perl}":
+    command   => "env HOME=${home} PLENV_VERSION=${perl} carton install",
     cwd       => $home,
     user      => $user,
     group     => $group,
     path      => "${home}/bin:${home}/.plenv/shims:/bin:/usr/bin",
     creates   => "${home}/cpanfile.lock",
     subscribe => File["${user}/cpanfile"],
+    require   => Plenvcpanm["${user}/${perl}/Carton"]
   }
 
 }

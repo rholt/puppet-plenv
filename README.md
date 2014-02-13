@@ -1,5 +1,7 @@
 # puppet-plenv
 
+[![Build Status](https://secure.travis-ci.org/rholt/puppet-plenv.png?branch=master)](http://travis-ci.org/rholt/puppet-plenv)
+
 ## About
 
 This project is based on the work done by Andreas Loupasakis and others

@@ -156,9 +156,7 @@ Plese use github issues: [http://github.com/rholt/puppet-plenv/](http://github.c
 
 # SEE ALSO
 
-[App::perlbrew](http://search.cpan.org/perldoc?App::perlbrew) provides same feature. But plenv provides project local file: __ .perl-version __.
-
-Most of puppet-plenv was derived from [puppet-rbenv](https://github.com/alup/puppet-rbenv).
+Most of puppet-plenv code was derived from [puppet-rbenv](https://github.com/alup/puppet-rbenv).
 
 # LICENSE
 

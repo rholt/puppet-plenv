@@ -1,6 +1,6 @@
 # puppet-plenv
 
-[![Build Status](https://secure.travis-ci.org/rholt/puppet-plenv.png?branch=master)](http://travis-ci.org/rholt/puppet-plenv)
+[![Build Status](https://travis-ci.org/rholt/puppet-plenv.png?branch=master)](https://travis-ci.org/rholt/puppet-plenv)
 
 ## About
 

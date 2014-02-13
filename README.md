@@ -1,9 +1,12 @@
-# Puppet-Plenv
+# puppet-plenv
 
 ## About
 
-This project provides manifests for the installation of
-[plenv](https://github.com/tokuhirom/plenv) (perl Version Management).
+This project is based on the work done by Andreas Loupasakis and others
+( see [puppet-rbenv](https://github.com/alup/puppet-rbenv) ). It provides manifests for the
+installation and operation of the [plenv](https://github.com/tokuhirom/plenv) (perl Version Management)
+ utility.
+
 In a nutshell, it supports the following conveniences:
 
 * Defined resources for the installation of perl envs for one or more users.
@@ -151,10 +154,6 @@ pluginsync = true
 
 Plese use github issues: [http://github.com/rholt/puppet-plenv/](http://github.com/rholt/puppet-plenv/).
 
-# AUTHOR
-
-Rohan Holt <rohan.holt @ GMAIL COM>
-
 # SEE ALSO
 
 [App::perlbrew](http://search.cpan.org/perldoc?App::perlbrew) provides same feature. But plenv provides project local file: __ .perl-version __.
@@ -183,5 +182,4 @@ it under the same terms as Perl itself.
 
     THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-## License
 

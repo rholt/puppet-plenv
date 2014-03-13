@@ -6,24 +6,28 @@ define plenv::cpanm(
   $perl,
   $module = $title,
   $modversion = '',
-  $home   = '',
-  $root   = '',
+  $home   = $::plenv::default_home_path,
+  $root   = $::plenv::default_root_path,
   $source = '',
   $ensure = present
 ) {
 
-  $home_path = $home ? { '' => "/home/${user}", default => $home }
-  $root_path = $root ? { '' => "${home_path}/.plenv", default => $root }
+  if !defined(Class['plenv']) {
+    fail('You must include the plenv base class before using any plenv defined resource types')
+  }
 
   if ! defined( Exec["plenv::compile ${user} ${perl}"] ) {
     fail("Plenv-Perl ${perl} for user ${user} not found in catalog")
   }
 
+  $home_path = $home ? { '' => "/home/${user}", default => $home }
+  $root_path = $root ? { '' => "${home_path}/.plenv", default => $root }
+
   plenvcpanm {"${user}/${perl}/${module}":
     ensure  => $ensure,
     user    => $user,
     module  => $module,
-	modversion => $modversion,
+    modversion => $modversion,
     perl    => $perl,
     plenv   => "${root_path}/versions/${perl}",
     source  => $source,

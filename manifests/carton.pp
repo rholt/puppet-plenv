@@ -3,21 +3,25 @@ define plenv::carton(
   $user,
   $perl    = $title,
   $group   = $user,
-  $content = '',
-  $modules = ''
+  $content = $::plenv::default_cpanfile_content,
+  $modules = $::plenv::default_cpan_modules
 ) {
 
+  if !defined(Class['plenv']) {
+    fail('You must include the plenv base class before using any plenv defined resource types')
+  }
+
   if ( $modules ) {
-    $cpanfile = template('plenv/cpanfile.erb')
+    $cpanfile = template($::plenv::cpanfile_template)
   } elsif ( $content ) {
     $cpanfile = $content
   } else {
-    fail('carton requires either a cpanfile')
+    fail('carton requires either a list of modules or cpanfile content')
   }
 
-  file {"${user}/cpanfile":
+  file { "${home}/${::plenv::cpanfile_name}":
     ensure  => present,
-    path    => "${home}/cpanfile",
+    path    => "${home}/${::plenv::cpanfile_name}",
     owner   => $user,
     group   => $group,
     content => $cpanfile,
@@ -30,8 +34,8 @@ define plenv::carton(
     user      => $user,
     group     => $group,
     path      => "${home}/bin:${home}/.plenv/shims:/bin:/usr/bin",
-    creates   => "${home}/cpanfile.lock",
-    subscribe => File["${user}/cpanfile"],
+    creates   => "${home}/${::plenv::carton_lock_file}",
+    subscribe => File["${home}/${::plenv::cpanfile_name}"],
     require   => Plenvcpanm["${user}/${perl}/Carton"]
   }
 

@@ -1,6 +1,9 @@
 require 'spec_helper'
 
 describe 'plenv::cpanm', :type => :define do
+  let :pre_condition do
+      'class { "plenv" : }'
+  end
 
   # User must be unique to this spec so that our fixture doesn't break other specs.
   # User and version must match what's in the Exec[plenv::compile...] 

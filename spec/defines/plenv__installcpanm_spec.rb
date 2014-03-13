@@ -1,6 +1,9 @@
 require 'spec_helper'
 
 describe 'plenv::installcpanm', :type => :define do
+  let :pre_condition do
+      'class { "plenv" : }'
+  end
   let(:user)         { 'tester' }
   let(:perl_version) { '5.10.1' }
   let(:title)        { "plenv::installcpanm #{user} #{perl_version}" }

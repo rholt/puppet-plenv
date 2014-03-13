@@ -6,6 +6,11 @@ define plenv::client(
   $source,
   $rc = '.profile'
 ) {
+
+  if !defined(Class['plenv']) {
+    fail('You must include the plenv base class before using any plenv defined resource types')
+  }
+
   if ! defined(Exec["plenv::compile ${owner} ${perl}"]) {
     fail("Perl version ${perl} is not compiled for ${owner}")
   }
@@ -21,12 +26,6 @@ define plenv::client(
     path   => "${home}/${rc}",
     target => "${source}/${rc}",
   }
-
-  #file {"${user}/.gemrc":
-  #  ensure => link,
-  #  path   => "${home}/.gemrc",
-  #  target => "${source}/.gemrc",
-  #}
 
   file {"${user}/.plenv-version":
     ensure  => present,

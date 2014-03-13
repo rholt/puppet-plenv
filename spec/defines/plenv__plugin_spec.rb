@@ -1,6 +1,10 @@
 require 'spec_helper'
 
 describe 'plenv::plugin', :type => :define do
+  let :pre_condition do
+         'class { "plenv" : }'
+  end
+
   let(:user)        { 'tester' }
   let(:plugin_name) { 'plenv-vars' }
   let(:dot_plenv)   { "/home/#{user}/.plenv" }

@@ -10,6 +10,10 @@ define plenv::installcpanm(
   $carton         = present
 ) {
 
+  if !defined(Class['plenv']) {
+    fail('You must include the plenv base class before using any plenv defined resource types')
+  }
+
   $home_path = $home ? { '' => "/home/${user}", default => $home }
   $root_path = $root ? { '' => "${home_path}/.plenv", default => $root }
 
@@ -19,13 +23,9 @@ define plenv::installcpanm(
   $global_path = "${root_path}/version"
   $path        = [ $shims, $bin, '/bin', '/usr/bin' ]
 
-  if ! defined( Class['plenv::dependencies'] ) {
-    require plenv::dependencies
-  }
-
   exec { "plenv::installcpanm ${user} ${perl}":
     command     => "env PLENV_VERSION=${perl} plenv install-cpanm",
-    timeout     => 100,
+    timeout     => $::plenv::default_exec_timeout,
     user        => $user,
     group       => $group,
     cwd         => $home_path,
@@ -44,6 +44,6 @@ define plenv::installcpanm(
     module => 'Carton',
     home   => $home_path,
     root   => $root_path,
-	require => Exec["plenv::installcpanm ${user} ${perl}"]
+    require => Exec["plenv::installcpanm ${user} ${perl}"]
   }
 }

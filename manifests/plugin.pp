@@ -3,19 +3,23 @@ define plenv::plugin(
   $source,
   $plugin_name = $title,
   $group       = $user,
-  $home        = '',
-  $root        = '',
-  $timeout     = 100
+  $home        = $::plenv::default_home_path,
+  $root        = $::plenv::default_root_path,
+  $timeout     = $::plenv::default_exec_timeout
 ) {
+
+  if !defined(Class['plenv']) {
+    fail('You must include the plenv base class before using any plenv defined resource types')
+  }
+
+  if $source !~ /^(git|https):/ {
+    fail('Only git plugins are supported')
+  }
 
   $home_path   = $home ? { '' => "/home/${user}",       default => $home }
   $root_path   = $root ? { '' => "${home_path}/.plenv", default => $root }
   $plugins     = "${root_path}/plugins"
   $destination = "${plugins}/${plugin_name}"
-
-  if $source !~ /^(git|https):/ {
-    fail('Only git plugins are supported')
-  }
 
   if ! defined(File["plenv::plugins ${user}"]) {
     file { "plenv::plugins ${user}":

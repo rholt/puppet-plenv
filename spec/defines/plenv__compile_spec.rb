@@ -1,6 +1,9 @@
 require 'spec_helper'
 
 describe 'plenv::compile', :type => :define do
+  let :pre_condition do
+       'class { "plenv" : }'
+  end
   let(:user)         { 'tester' }
   let(:perl_version) { '5.10.1' }
   let(:title)        { "plenv::compile::#{user}::#{perl_version}" }

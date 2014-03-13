@@ -5,11 +5,15 @@ define plenv::compile(
   $user,
   $perl           = $title,
   $group          = $user,
-  $home           = '',
-  $root           = '',
+  $home           = $::plenv::default_home_path,
+  $root           = $::plenv::default_root_path,
   $source         = '',
   $global         = false,
 ) {
+
+  if !defined(Class['plenv']) {
+        fail('You must include the plenv base class before using any plenv defined resource types')
+  }
 
   $home_path = $home ? { '' => "/home/${user}", default => $home }
   $root_path = $root ? { '' => "${home_path}/.plenv", default => $root }
@@ -19,10 +23,6 @@ define plenv::compile(
   $versions    = "${root_path}/versions"
   $global_path = "${root_path}/version"
   $path        = [ $shims, $bin, '/bin', '/usr/bin' ]
-
-  if ! defined( Class['plenv::dependencies'] ) {
-    require plenv::dependencies
-  }
 
   # Set Timeout to disabled cause we need a lot of time to compile.
   # Use HOME variable and define PATH correctly.
@@ -54,10 +54,10 @@ define plenv::compile(
 
   plenv::installcpanm { "plenv::installcpanm ${user} ${perl}":
       user => $user,
-	  perl => $perl,
-	  home => $home,
-	  root => $root,
-	  require => Exec["plenv::compile ${user} ${perl}"]
+      perl => $perl,
+      home => $home,
+      root => $root,
+     require => Exec["plenv::compile ${user} ${perl}"]
   }
 
   exec { "plenv::rehash ${user} ${perl}":

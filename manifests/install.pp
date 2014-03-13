@@ -1,10 +1,14 @@
 define plenv::install(
   $user  = $title,
   $group = $user,
-  $home  = '',
-  $root  = '',
-  $rc    = '.bash_profile'
+  $root  = $::plenv::default_root_path,
+  $home  = $::plenv::default_home_path,
+  $rc    = $::plenv::bash_profile
 ) {
+
+  if !defined(Class['plenv']) {
+    fail('You must include the plenv base class before using any plenv defined resource types')
+  }
 
   $home_path = $home ? { '' => "/home/${user}", default => $home }
   $root_path = $root ? { '' => "${home_path}/.plenv", default => $root }
@@ -12,17 +16,13 @@ define plenv::install(
   $plenvrc = "${home_path}/.plenvrc"
   $shrc  = "${home_path}/${rc}"
 
-  if ! defined( Class['plenv::dependencies'] ) {
-    require plenv::dependencies
-  }
-
   exec { "plenv::checkout ${user}":
-    command => "git clone https://github.com/tokuhirom/plenv.git ${root_path}",
+    command => "git clone $::plenv::plenv_git_url ${root_path}",
     user    => $user,
     group   => $group,
     creates => $root_path,
-    path    => ['/bin', '/usr/bin', '/usr/sbin'],
-    timeout => 100,
+    path    => $::plenv::default_paths,
+    timeout => $::plenv::default_exec_timeout,
     cwd     => $home_path,
     require => Package['git'],
   }
@@ -31,7 +31,7 @@ define plenv::install(
     path    => $plenvrc,
     owner   => $user,
     group   => $group,
-    content => template('plenv/dot.plenvrc.erb'),
+    content => template($::plenv::plenvrc_template),
     require => Exec["plenv::checkout ${user}"],
   }
 
@@ -40,7 +40,7 @@ define plenv::install(
     user    => $user,
     group   => $group,
     unless  => "grep -q plenvrc ${shrc}",
-    path    => ['/bin', '/usr/bin', '/usr/sbin'],
+    path    => $::plenv::default_paths,
     require => File["plenv::plenvrc ${user}"],
   }
 
@@ -52,12 +52,12 @@ define plenv::install(
     require => Exec["plenv::checkout ${user}"]
   }
 
-  plenv::plugin::perlbuild { "plenv::perlbuild ${user}": 
-	user    => $user,
-	group   => $group,
-	home    => $home,
-	root    => $root,
-	require => File["plenv::cache-dir ${user}"]
-  }
+    plenv::plugin::perlbuild { "plenv::perlbuild ${user}":
+    user    => $user,
+    group   => $group,
+    home    => $home,
+    root    => $root,
+    require => File["plenv::cache-dir ${user}"]
+    }
 
 }

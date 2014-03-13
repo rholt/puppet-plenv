@@ -22,6 +22,8 @@ In a nutshell, it supports the following conveniences:
 You can use the module in your manifest with the following code:
 
 ```
+class { 'plenv': }
+
 plenv::install { 'someuser': }
 
 

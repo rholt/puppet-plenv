@@ -1,0 +1,12 @@
+---
+buildName: "puppet-plenv"
+links:
+  Git: "git@github.com:rholt/puppet-plenv.git"
+  Job: "http://192.168.64.4:31123/job/puppet-plenv"
+  Production: "http://10.0.0.180:80/kubernetes/pods?namespace=team-onzo-prod"
+  Staging: "http://10.0.0.180:80/kubernetes/pods?namespace=team-onzo-staging"
+  Testing: "http://10.0.0.180:80/kubernetes/pods?namespace=team-onzo-testing"
+environments:
+  Testing: "team-onzo-testing"
+  Staging: "team-onzo-staging"
+  Production: "team-onzo-prod"
